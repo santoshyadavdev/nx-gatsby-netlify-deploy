@@ -11,11 +11,25 @@ export function runBuilder(
   options: BuildBuilderSchema,
   context: BuilderContext
 ): Observable<BuilderOutput> {
-  return of({ success: true }).pipe(
-    tap(() => {
-      context.logger.info('Builder ran for build');
-    })
-  );
+  return new Observable<BuilderOutput>((subscriber) => {
+    context.scheduleTarget({
+      target: 'build',
+      project: context.target.project,
+      configuration: '',
+    }).then(() => {
+      context.logger.info(`✔ Build Completed`);
+      subscriber.next({
+        success: true,
+      });
+      subscriber.complete();
+    }).catch(err => {
+      context.logger.error(`❌ Application build failed`);
+      subscriber.next({
+        error: `${err}`,
+        success: false,
+      });
+    });
+  });
 }
 
 export default createBuilder(runBuilder);

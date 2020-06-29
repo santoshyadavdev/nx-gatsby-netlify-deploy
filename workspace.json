@@ -1,8 +1,101 @@
 {
   "version": 1,
-  "projects": {},
+  "projects": {
+    "gatsby-app": {
+      "root": "apps/gatsby-app",
+      "sourceRoot": "apps/gatsby-app/src",
+      "projectType": "application",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/gatsby:build",
+          "options": {
+            "uglify": true,
+            "color": true,
+            "profile": false
+          },
+          "configurations": {
+            "production": {}
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/gatsby:server",
+          "options": {
+            "buildTarget": "gatsby-app:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "gatsby-app:build:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "apps/gatsby-app/tsconfig.json",
+              "apps/gatsby-app/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/gatsby-app/**/*"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/gatsby-app/jest.config.js",
+            "tsConfig": "apps/gatsby-app/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        },
+        "deploy": {
+          "builder": "@netlify-builder/deploy:deploy",
+          "options": {
+            "outputPath": "apps/gatsby-app/public",
+            "netlifyToken": "",
+            "siteId": ""
+          }
+        }
+      }
+    },
+    "gatsby-app-e2e": {
+      "root": "apps/gatsby-app-e2e",
+      "sourceRoot": "apps/gatsby-app-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/gatsby-app-e2e/cypress.json",
+            "tsConfig": "apps/gatsby-app-e2e/tsconfig.e2e.json",
+            "devServerTarget": "gatsby-app:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "gatsby-app:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/gatsby-app-e2e/tsconfig.e2e.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "!apps/gatsby-app-e2e/**/*"
+            ]
+          }
+        }
+      }
+    }
+  },
   "cli": {
-    "defaultCollection": "@nrwl/workspace"
+    "defaultCollection": "@nrwl/gatsby"
   },
   "schematics": {
     "@nrwl/workspace": {
@@ -61,6 +154,10 @@
       "library": {
         "linter": "eslint"
       }
+    },
+    "@nrwl/gatsby": {
+      "application": {}
     }
-  }
+  },
+  "defaultProject": "gatsby-app"
 }

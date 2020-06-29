@@ -18,5 +18,13 @@
       }
     }
   },
-  "projects": {}
+  "projects": {
+    "gatsby-app": {
+      "tags": []
+    },
+    "gatsby-app-e2e": {
+      "tags": [],
+      "implicitDependencies": ["gatsby-app"]
+    }
+  }
 }
